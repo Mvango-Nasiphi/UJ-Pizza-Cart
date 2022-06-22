@@ -57,15 +57,15 @@
 				this.paymentMessage = 'No amount entered!'
 			}
 			if (this.paymentAmount >= this.cartTotal()) {
-				this.paymentMessage = 'Payment successful!'
+				this.paymentMessage = 'Enjoy your pizzas!'
 
 				setTimeout(() => {
-					this.checkout = false;
+					this.payNow = false;
 					this.clearCart();
 				}, 3000);
 
 			} else {
-				this.paymentMessage = 'Payment failed!'
+				this.paymentMessage = 'Sorry - that is not enough money!'
 			}
 		},
 		clearCart() {
