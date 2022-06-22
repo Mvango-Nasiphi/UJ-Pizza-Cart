@@ -1,0 +1,227 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta http-equiv="X-UA-Compatible" content="IE=edge">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Document</title>
+    <link rel="stylesheet" href="style.css">
+	<script src="//unpkg.com/alpinejs" defer></script>
+</head>
+<body>
+    <div class="container" x-data="{showCart : false, 
+		smallTotal : 0.00, 
+		smallQty : 0, 
+		mediumTotal : 0.00, 
+		mediumQty : 0, 
+		largeTotal : 0.00, 
+		largeQty : 0, 
+		payNow : false,
+		paymentAmount : 0,
+		paymentMessage : '',
+		buySmall() {
+			this.smallTotal += 59.99; 
+			this.smallQty += 1
+		},
+		clearSmall() {
+			if (this.smallQty > 0) {
+				this.smallTotal -= 59.99; 
+				this.smallQty -= 1
+			}
+		},
+		buyMedium() {
+			this.mediumTotal += 79.99; 
+			this.mediumQty += 1
+		},
+		clearMedium() {
+			if (this.mediumQty > 0) {
+				this.mediumTotal -= 79.99; 
+				this.mediumQty -= 1
+			}	
+		},
+		buyLarge() {
+			this.largeTotal += 99.99; 
+			this.largeQty += 1
+		},
+		clearLarge() {
+			if (this.largeQty > 0) {
+				this.largeTotal -= 99.99; 
+				this.largeQty -= 1
+			}		
+		},
+		cartTotal() {
+			return this.smallTotal + this.mediumTotal + this.largeTotal
+		},
+		makePayment() {
+			if (!this.paymentAmount) {
+				this.paymentMessage = 'No amount entered!'
+			}
+			if (this.paymentAmount >= this.cartTotal()) {
+				this.paymentMessage = 'Payment successful!'
+
+				setTimeout(() => {
+					this.checkout = false;
+					this.clearCart();
+				}, 3000);
+
+			} else {
+				this.paymentMessage = 'Payment failed!'
+			}
+		},
+		clearCart() {
+			this.smallTotal = 0.00; 
+			this.smallQty = 0; 
+			this.mediumTotal = 0.00; 
+			this.mediumQty = 0; 
+			this.largeTotal = 0.00; 
+			this.largeQty = 0;
+		}
+	}">
+
+		<div class="header"  >
+			<div class="f3">
+				<h1>Zandile's perfect pizza</h1>
+
+				<img src="https://user-images.githubusercontent.com/34037/167314038-e58b68c0-2742-43c6-a358-8b94d3c99617.png" alt="" width="40" >
+				<img src="https://user-images.githubusercontent.com/34037/167314003-8ded573d-4bb2-447f-b27c-5545631b1904.png" alt="" width="40" >
+				<img src="https://user-images.githubusercontent.com/34037/167313920-09aeb40f-9952-439b-8e54-a04c02caa427.png" alt="" width="40" >
+
+			</div>
+
+			<div class="f1" >
+				<button x-on:click="showCart=true">
+					<img src="https://www.freeiconspng.com/images/cart-icon" width="30" alt="">
+					Show cart
+					<strong>R<span x-text="cartTotal().toFixed(2)"></span></strong>
+				</button>
+			</div>
+		</div>
+    
+		<div class="cart-box">
+			<div class="cart" x-show="showCart">
+				<div>
+					<button x-on:click="showCart=false">
+						<img src="https://www.freeiconspng.com/images/cart-icon" width="30" alt="">
+						Close cart
+					</button>
+				</div>
+				<div class="">
+					<h2>Pizza orders
+						<img src="https://www.freeiconspng.com/images/cart-icon" width="30" alt="">
+					</h2>
+				</div>
+				
+				<table>
+					<tr x-show="smallQty > 0">
+						<td>Small pizza</td>
+						<td>
+							<span x-text="smallQty"></span>
+							<button x-on:click="buySmall()" x-show="smallQty > 0">+</button>
+							<button x-on:click="clearSmall()" x-show="smallQty > 0">-</button>
+						</td>
+						<td>
+							R<span x-text="smallTotal.toFixed(2)"></span>
+						</td>
+					</tr>
+					<tr x-show="mediumQty > 0">
+						<td>Medium pizza</td>
+						<td>
+							<span x-text="mediumQty"></span>
+							<button x-on:click="buyMedium()" x-show="mediumQty > 0">+</button>
+							<button x-on:click="clearMedium()" x-show="mediumQty > 0">-</button>
+						</td>
+						<td>
+							R<span x-text="mediumTotal.toFixed(2)"></span>
+						</td>
+					</tr>
+					<tr x-show="largeQty > 0">
+						<td>Large pizza</td>
+						<td>
+							<span x-text="largeQty"></span>
+							<button x-on:click="buyLarge()" x-show="largeQty > 0">+</button>
+							<button x-on:click="clearLarge()" x-show="largeQty > 0">-</button>
+						</td>
+						<td>
+							R<span x-text="largeTotal.toFixed(2)"></span>
+						</td>
+					</tr>
+					<tr x-show="cartTotal() > 0">
+						<td colspan="2">Total cost</td>
+						<td>
+							R<span x-text="cartTotal().toFixed(2)"></span>
+						</td>
+					</tr>
+					<tr x-show="cartTotal() > 0">
+						<td colspan="2">
+							<div x-show="payNow">
+
+							<div class="message" x-text="paymentMessage"></div>
+							<div>
+								<label for="">Payment amount</label>
+								<input class="input" type="number" placeholder="Payment amount" x-model="paymentAmount">
+								<button x-on:click="makePayment" class="btn" >Pay now</button>
+							</div>
+							</div>
+
+						</td>
+						<td>
+							<button x-show="!payNow" x-on:click="payNow=true" class="btn" >
+								<img src="https://www.freeiconspng.com/images/cart-icon" width="20" alt="">
+								Checkout</button>
+						</td>
+					</tr>
+				</table>
+			</div>
+
+		</div>
+    
+            
+        <div class="Pizzas">
+            <div style="background-color: gainsboro;" class="Pizza">
+                <img src="https://user-images.githubusercontent.com/34037/167314038-e58b68c0-2742-43c6-a358-8b94d3c99617.png" alt=""> 
+                <h2>Small pizza</h2>
+                <h3>R59.99</h3>
+                <button class="buy btn" x-on:click="buySmall">
+                    <img src="https://user-images.githubusercontent.com/34037/167314038-e58b68c0-2742-43c6-a358-8b94d3c99617.png" alt="" width="20" >
+                Order</button>
+                <p>Small margerita pizza with 3 toppings max. 1 or less meat topping. 3 or less other toppings</p>
+            </div> 
+
+            <div style="background-color: blanchedalmond;" class="Pizza">
+                <img src="https://user-images.githubusercontent.com/34037/167314003-8ded573d-4bb2-447f-b27c-5545631b1904.png" alt="">
+                <h2>Medium pizza</h2>
+                <h3>R79.99</h3>
+                <button class="buy btn" x-on:click="mediumTotal += 79.99; mediumQty += 1">
+                    <img src="https://user-images.githubusercontent.com/34037/167314003-8ded573d-4bb2-447f-b27c-5545631b1904.png" alt="" width="20" >
+                Order</button>
+                <p>Medium margerita pizza with 3 toppings max. 2 or less meat topping. 3 or less other toppings</p>
+            </div>
+    
+    
+            <div style="background-color: burlywood;" class="Pizza">
+                <img src="https://user-images.githubusercontent.com/34037/167313920-09aeb40f-9952-439b-8e54-a04c02caa427.png" alt="">
+                <h2>Large pizza</h2>
+                <h3>R99.99</h3>
+                <button class="buy btn" x-on:click="largeTotal += 99.99; largeQty += 1">
+                    <img src="https://user-images.githubusercontent.com/34037/167313920-09aeb40f-9952-439b-8e54-a04c02caa427.png" alt="" width="20" >
+                Order</button>   
+                <p>Large margerita pizza with 3 toppings max. 3 or less meat topping. 3 or less other toppings</p>
+            </div>
+        </div>
+
+        <div class="footer">
+            <div class="contacts">
+                <p>contact us at: (021)-541-1000</p>
+                <p>/fb</p>
+                <p>/insta</p>
+                <p>@perfectpizza</p>    
+            </div>    
+            <div class="address">
+                <p>Pizza Plaza</p>
+                <p>Dough Road</p>
+                <p>Base Town</p>
+            </div>
+        </div>
+    </div>
+</body>
+</html>
